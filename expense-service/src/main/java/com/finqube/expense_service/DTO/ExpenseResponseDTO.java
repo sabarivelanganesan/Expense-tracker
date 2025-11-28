@@ -12,6 +12,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Schema(name = "Expense Response")
 public class ExpenseResponseDTO {
     private String exp_id;
+    private String exp_name;
     private String exp_amount;
     private Long exp_category_id;
     private String expenseDate;
