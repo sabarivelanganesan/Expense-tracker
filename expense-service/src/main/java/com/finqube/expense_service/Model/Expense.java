@@ -25,6 +25,9 @@ public class Expense {
     private UUID exp_id;
 
     @NotNull
+    private String exp_name;
+
+    @NotNull
     private Double exp_amount;
 
     @NotNull

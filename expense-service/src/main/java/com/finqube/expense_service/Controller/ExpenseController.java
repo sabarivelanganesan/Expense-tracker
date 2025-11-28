@@ -1,6 +1,6 @@
 package com.finqube.expense_service.Controller;
 
-import com.finqube.expense_service.DTO.ExpenseDTO;
+import com.finqube.expense_service.DTO.ExpenseRequestDTO;
 import com.finqube.expense_service.DTO.ExpenseResponseDTO;
 import com.finqube.expense_service.Service.CategoryService;
 import com.finqube.expense_service.Service.ExpenseService;
@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/expenses")
@@ -26,15 +27,15 @@ public class ExpenseController {
 
     @PostMapping
     @Operation(summary = "Create new expense")
-    public ResponseEntity<ExpenseResponseDTO> createExpense(@Valid @RequestBody ExpenseDTO expenseDTO) {
-        Category category = categoryService.getCategoryByID(expenseDTO.getExp_category_id());
-        ExpenseResponseDTO response =  expenseService.createExpense(expenseDTO, category);
-        return ResponseEntity.status(201).body(response);
+    public ResponseEntity<ExpenseResponseDTO> createExpense(@Valid @RequestBody ExpenseRequestDTO expenseRequestDTO) {
+        Category category = categoryService.getCategoryByID(Long.parseLong(expenseRequestDTO.getExp_category_id()));
+        ExpenseResponseDTO response =  expenseService.createExpense(expenseRequestDTO, category);
+        return ResponseEntity.ok().body(response);
     }
     @GetMapping
     @Operation(summary = "Get all expenses")
     public ResponseEntity<List<ExpenseResponseDTO>> getExpenses() {
-        List<ExpenseResponseDTO> expenses = expenseService.getAllExpenses();
+        List<ExpenseResponseDTO> expenses = expenseService.getExpenses();
         return ResponseEntity.ok().body(expenses);
     }
     @GetMapping("/{id}")
@@ -42,6 +43,22 @@ public class ExpenseController {
     public ResponseEntity<ExpenseResponseDTO> getExpenseByID(@PathVariable("id") String expense_id) {
         ExpenseResponseDTO response = expenseService.getExpenseByID(expense_id);
         return ResponseEntity.ok().body(response);
+    }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Update expense")
+    public ResponseEntity<ExpenseResponseDTO> updateExpenseByID(@PathVariable("id") String expense_id, @Valid @RequestBody ExpenseRequestDTO expenseRequestDTO) {
+        Category category = categoryService.getCategoryByID(Long.parseLong(expenseRequestDTO.getExp_category_id()));
+
+        ExpenseResponseDTO expenseResponseDTO = expenseService.updateExpenseByID(expense_id, expenseRequestDTO, category);
+
+        return ResponseEntity.ok().body(expenseResponseDTO);
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Delete expense")
+    public ResponseEntity<Map<String, String>> deleteExpense(@PathVariable("id") String expense_id) {
+        return ResponseEntity.ok().body(expenseService.deleteExpense(expense_id));
     }
 
 }
